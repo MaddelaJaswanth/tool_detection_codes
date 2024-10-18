@@ -23,7 +23,7 @@ def adjust_brightness_contrast(frame):
     else:  # Normal brightness
         brightness = 0
         contrast = 0
-
+    #print(f"Average Brightness: {avg_brightness:.2f}, Adjusting -> Brightness: {brightness}, Contrast: {contrast}")
     # Convert to float to prevent clipping
     img = frame.astype(np.float32)
 
@@ -49,7 +49,7 @@ def detect_blue_object(frame):
     
     # Define HSV ranges for blue color
     lower_blue = np.array([100, 150, 150])  # Adjust these values based on conditions
-    upper_blue = np.array([140, 255, 255])  # Adjust these values based on conditions
+    upper_blue = np.array([130, 255, 255])  # Adjust these values based on conditions
 
     # Create a mask for blue color
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
@@ -90,9 +90,7 @@ def detect_blue_object(frame):
 
     elif len(coordinates) == 1:
         print("One object is detected.")
-    else:
-        print("No objects detected.")
-
+        print(f"Object 1: ({0}, {0})")
     return frame
 
 def screen_midpoint(frame):
@@ -133,7 +131,7 @@ while True:
 
         # Calculate FPS and reset every second
         if elapsed_time >= 1.0: 
-            print(f"Frames in one second: {frame_count}")
+            #print(f"Frames in one second: {frame_count}")
             cv2.putText(frame, f"FPS: {frame_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
             frame_count = 0  # Reset frame count
             start_time = time.time()  # Reset the start time

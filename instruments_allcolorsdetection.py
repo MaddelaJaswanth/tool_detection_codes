@@ -11,7 +11,7 @@ fig, ax = plt.subplots()
 # Function to choose the color range based on user input
 def get_color_range(color_choice):
     if color_choice == 'blue':
-        lower = np.array([0, 0, 100])
+        lower = np.array([100, 0, 100])
         upper = np.array([70, 70, 255])
     elif color_choice == 'green':
         lower = np.array([0, 100, 0])
@@ -84,8 +84,8 @@ while True:
     plt.pause(0.001)
     
     # If any key is pressed, break the loop
-    if plt.waitforbuttonpress():
-        break
+    #if plt.waitforbuttonpress():
+        #break
 
 # Release the camera and close the plot
 cap.release()

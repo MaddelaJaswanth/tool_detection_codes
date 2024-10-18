@@ -8,48 +8,18 @@ def initialize_camera(camera_index):
         print(f"Error: Camera at index {camera_index} cannot be opened.")
     return cap
 
-def adjust_brightness_contrast(frame):
-    # Convert the image to grayscale to calculate brightness
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    avg_brightness = np.mean(gray)
+cap = initialize_camera(1)  # Try to open the external camera at index 1
+stop_flag = False  # Global flag to indicate when to stop the loop
 
-    # Determine brightness adjustment
-    if avg_brightness < 100:  # Low brightness
-        brightness = 40
-        contrast = 20
-    elif avg_brightness > 180:  # High brightness
-        brightness = -30
-        contrast = 30
-    else:  # Normal brightness
-        brightness = 0
-        contrast = 0
-
-    # Convert to float to prevent clipping
-    img = frame.astype(np.float32)
-
-    # Adjust brightness
-    img += brightness
-
-    # Adjust contrast
-    img = img * (contrast / 127 + 1) - contrast
-
-    # Clip to the range [0, 255]
-    img = np.clip(img, 0, 255).astype(np.uint8)
-    return img
-
+# Define a function to detect blue objects in the frame
 def detect_blue_object(frame):
-    # Adjust brightness and contrast
-    frame = adjust_brightness_contrast(frame)
-
     # Apply bilateral filter to smooth the image
     frame = cv2.bilateralFilter(frame, 9, 75, 75)
 
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    
-    # Define HSV ranges for blue color
-    lower_blue = np.array([100, 150, 150])  # Adjust these values based on conditions
-    upper_blue = np.array([140, 255, 255])  # Adjust these values based on conditions
+    lower_blue = np.array([100, 150, 150])  # Adjust if needed
+    upper_blue = np.array([140, 255, 255])  # Adjust if needed
 
     # Create a mask for blue color
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
@@ -84,6 +54,10 @@ def detect_blue_object(frame):
     if len(coordinates) == 2:
         mid_x = sum(coord[0] for coord in coordinates) // 2
         mid_y = sum(coord[1] for coord in coordinates) // 2
+        #cv2.circle(frame, (mid_x, mid_y), 5, (255, 0, 0), -1)
+        #cv2.putText(frame, f"Midpoint: ({mid_x},{mid_y})", (mid_x + 10, mid_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+
+        # Print coordinates of detected objects and midpoint one by one
         print(f"Object 1: ({coordinates[0][0]}, {coordinates[0][1]})")
         print(f"Object 2: ({coordinates[1][0]}, {coordinates[1][1]})")
         print(f"Midpoint: ({mid_x}, {mid_y})")
@@ -95,6 +69,7 @@ def detect_blue_object(frame):
 
     return frame
 
+# Function to draw the screen midpoint
 def screen_midpoint(frame):
     height, width, channel = frame.shape
     screen_mid_x = width // 2
@@ -102,9 +77,6 @@ def screen_midpoint(frame):
     cv2.circle(frame, (screen_mid_x, screen_mid_y), 5, (0, 0, 255), -1)
     cv2.putText(frame, f"screen_mid_point:({screen_mid_x},{screen_mid_y})", (screen_mid_x + 10, screen_mid_y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     return frame
-
-cap = initialize_camera(1)  # Try to open the external camera at index 1
-stop_flag = False  # Global flag to indicate when to stop the loop
 
 # Initialize frame counting
 frame_count = 0
@@ -138,7 +110,7 @@ while True:
             frame_count = 0  # Reset frame count
             start_time = time.time()  # Reset the start time
 
-        cv2.imshow('Detected Blue Objects', frame)
+        #cv2.imshow('Detected Blue Objects', frame)
 
         # Break the loop if the 'q' key is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -151,4 +123,6 @@ while True:
 
 # Release the camera and close the OpenCV window
 cap.release()
+cv2.destroyAllWindows()
+
 cv2.destroyAllWindows()

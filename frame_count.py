@@ -1,4 +1,4 @@
-"""import cv2
+import cv2
 import time
 import matplotlib.pyplot as plt
 # Open the default camera (0 is usually the default camera index)
@@ -37,6 +37,19 @@ while True:
 # Release the camera and close the OpenCV window
 cap.release()
 cv2.destroyAllWindows()
+
+
+
+
+
+
+
+
+
+
+
+
+
 """
 import cv2
 import numpy as np
@@ -131,3 +144,4 @@ detection_thread.start()
 
 camera_thread.join()
 detection_thread.join()
+"""
